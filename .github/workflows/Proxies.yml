@@ -1,0 +1,32 @@
+name: Proxies
+
+on:
+  schedule:
+    - cron: "*/10 * * * *" # Runs every 10 minutes
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  fetch-and-combine:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16' # Specify Node.js version if needed
+
+      - name: Install Dependencies
+        run: npm install node-fetch@2 fs # node-fetch v2 is compatible with CommonJS
+
+      - name: Run Script
+        run: |
+          node proxy.js
+
+      - name: Upload combined file
+        uses: actions/upload-artifact@v3
+        with:
+          name: active_proxies
+          path: active_proxies.txt
